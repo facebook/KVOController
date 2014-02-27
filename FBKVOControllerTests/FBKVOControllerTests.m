@@ -284,7 +284,7 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
   circle.radius = 1.0;
   
   // verify unobserve all
-  [verifyCount(observer, times(1)) propertyDidChange];
+  [verifyCount(observer, times(2)) propertyDidChange];
 }
 
 - (void)testDeallocatedObserver
