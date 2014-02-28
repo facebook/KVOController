@@ -1,4 +1,7 @@
 # [KVOController](https://github.com/facebook/KVOController)
+[![Build Status](https://travis-ci.org/facebook/KVOController.png?branch=master)](https://travis-ci.org/facebook/KVOController)
+[![Version](https://cocoapod-badges.herokuapp.com/v/KVOController/badge.png)](http://cocoadocs.org/docsets/KVOController)
+[![Platform](https://cocoapod-badges.herokuapp.com/p/KVOController/badge.png)](http://cocoadocs.org/docsets/KVOController)
 
 Key-value observing is a particularly useful technique for communicating between layers in a Model-View-Controller application. KVOController builds on Cocoa's time-tested key-value observing implementation. It offers a simple, modern API, that is also thread safe. Benefits include:
 
