@@ -39,7 +39,11 @@ typedef void (^FBKVONotificationBlock)(id observer, id object, NSDictionary *cha
 - (instancetype)initWithObserver:(id)observer;
 
 /// The observer notified on key-value change. Specified on initialization.
+#ifdef __IPHONT_OS_VERSION_MIN_REQUIRED
 @property (atomic, weak, readonly) id observer;
+#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
+@property (atomic, assign, readonly) id observer;
+#endif
 
 /**
  @abstract Registers observer for key-value change notification.
