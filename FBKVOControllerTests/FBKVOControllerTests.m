@@ -269,7 +269,7 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
 {
   FBKVOTestCircle *circle = [FBKVOTestCircle circle];
   id<FBKVOTestObserving> observer = mockProtocol(@protocol(FBKVOTestObserving));
-  __attribute__((objc_precise_lifetime)) FBKVOController *controller = [FBKVOController controllerWithObserver:observer];
+  __attribute__((objc_precise_lifetime)) FBKVOController *controller = [[FBKVOController alloc] initWithObserver:observer];
   
   // add mock observer
   [controller observe:circle keyPath:radius options:optionsBasic action:@selector(propertyDidChange)];
