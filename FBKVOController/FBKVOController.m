@@ -528,6 +528,20 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
   [self _observe:object info:info];
 }
 
+
+- (void)observe:(id)object keyPaths:(NSArray *)keyPaths options:(NSKeyValueObservingOptions)options block:(FBKVONotificationBlock)block
+{
+  NSAssert(0 != keyPaths.count && NULL != block, @"missing required parameters observe:%@ keyPath:%@ block:%p", object, keyPaths, block);
+  if (nil == object || 0 == keyPaths.count || NULL == block) {
+    return;
+  }
+  
+	for (NSString *keyPath in keyPaths)
+	{
+		[self observe:object keyPath:keyPath options:options block:block];
+	}
+}
+
 - (void)observe:(id)object keyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options action:(SEL)action
 {
   NSAssert(0 != keyPath.length && NULL != action, @"missing required parameters observe:%@ keyPath:%@ action:%@", object, keyPath, NSStringFromSelector(action));
@@ -543,6 +557,20 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
   [self _observe:object info:info];
 }
 
+- (void)observe:(id)object keyPaths:(NSArray *)keyPaths options:(NSKeyValueObservingOptions)options action:(SEL)action
+{
+  NSAssert(0 != keyPaths.count && NULL != action, @"missing required parameters observe:%@ keyPath:%@ action:%@", object, keyPaths, NSStringFromSelector(action));
+  NSAssert([_observer respondsToSelector:action], @"%@ does not respond to %@", _observer, NSStringFromSelector(action));
+  if (nil == object || 0 == keyPaths.count || NULL == action) {
+    return;
+  }
+  
+	for (NSString *keyPath in keyPaths)
+	{
+		[self observe:object keyPath:keyPath options:options action:action];
+	}
+}
+
 - (void)observe:(id)object keyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context
 {
   NSAssert(0 != keyPath.length, @"missing required parameters observe:%@ keyPath:%@", object, keyPath);
@@ -555,6 +583,19 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
   
   // observe object with info
   [self _observe:object info:info];
+}
+
+- (void)observe:(id)object keyPaths:(NSArray *)keyPaths options:(NSKeyValueObservingOptions)options context:(void *)context
+{
+  NSAssert(0 != keyPaths.count, @"missing required parameters observe:%@ keyPath:%@", object, keyPaths);
+  if (nil == object || 0 == keyPaths.count) {
+    return;
+  }
+  
+	for (NSString *keyPath in keyPaths)
+	{
+		[self observe:object keyPath:keyPath options:options context:context];
+	}
 }
 
 - (void)unobserve:(id)object keyPath:(NSString *)keyPath
