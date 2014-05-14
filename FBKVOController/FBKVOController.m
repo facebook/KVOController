@@ -528,6 +528,16 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
   [self _observe:object info:info];
 }
 
+- (void)observe:(id)object keyPath:(NSString *)keyPath initial:(BOOL)initial block:(FBKVONotificationChangeBlock)block
+{
+  NSKeyValueObservingOptions options = NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld;
+  if(initial)  options |= NSKeyValueObservingOptionInitial;
+  
+  [self observe:object keyPath:keyPath options:options block:^(id observer, id object, NSDictionary *change) {
+    block(object, keyPath, change[NSKeyValueChangeOldKey], change[NSKeyValueChangeNewKey]);
+  }];
+}
+
 - (void)observe:(id)object keyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options action:(SEL)action
 {
   NSAssert(0 != keyPath.length && NULL != action, @"missing required parameters observe:%@ keyPath:%@ action:%@", object, keyPath, NSStringFromSelector(action));

@@ -19,6 +19,15 @@ typedef void (^FBKVONotificationBlock)(id observer, id object, NSDictionary *cha
 
 
 /**
+ @abstract Block called on key-value change notification.
+ @param object The object changed.
+ @param keypath The keypath of the observer.
+ @param oldObject The previous assigned object to keypath.
+  @param newObject The new assigned object to keypath.
+ */
+typedef void (^FBKVONotificationChangeBlock)(id object, NSString * keyPath, id oldValue, id newValue);
+
+/**
  @abstract FBKVOController makes Key-Value Observing simpler and safer.
  @discussion FBKVOController adds support for handling key-value changes with blocks and custom actions, as well as the NSKeyValueObserving callback. Notification will never message a deallocated observer. Observer removal never throws exceptions, and observers are removed implicitely on controller deallocation. FBKVOController is also thread safe. When used in a concurrent environment, it protects observers from possible ressurection and avoids ensuing crash. By default, the controller maintains a strong reference to objects observed.
  */
@@ -60,6 +69,16 @@ typedef void (^FBKVONotificationBlock)(id observer, id object, NSDictionary *cha
  @discussion On key-value change, the specified block is called. Inorder to avoid retain loops, the block must avoid referencing the KVO controller or an owner thereof. Observing an already observed object key path or nil results in no operation.
  */
 - (void)observe:(id)object keyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options block:(FBKVONotificationBlock)block;
+
+/**
+ @abstract Registers observer for key-value change notification.
+ @param object The object to observe.
+ @param keyPath The key path to observe.
+ @param initial The initial flag for the block options
+ @param block The block to execute on notification.
+ @discussion On key-value change, the specified block is called. Inorder to avoid retain loops, the block must avoid referencing the KVO controller or an owner thereof. Observing an already observed object key path or nil results in no operation.
+ */
+- (void)observe:(id)object keyPath:(NSString *)keyPath initial:(BOOL)initial block:(FBKVONotificationChangeBlock)block;
 
 /**
  @abstract Registers observer for key-value change notification.

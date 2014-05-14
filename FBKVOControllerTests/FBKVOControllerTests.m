@@ -69,6 +69,50 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
   [circle removeObserver:referenceObserver forKeyPath:radius];
 }
 
+- (void)testBlockBasicAsDefault
+{
+  FBKVOTestCircle *circle = [FBKVOTestCircle circle];
+  id<FBKVOTestObserving> observer = mockProtocol(@protocol(FBKVOTestObserving));
+  FBKVOController *controller = [FBKVOController controllerWithObserver:observer];
+  FBKVOTestObserver *referenceObserver = [FBKVOTestObserver observer];
+  
+  // add reference observe
+  [circle addObserver:referenceObserver forKeyPath:radius options:optionsBasic context:context];
+  
+  __block NSUInteger blockCallCount = 0;
+  __block id blockObserver = nil;
+  __block id blockObject = nil;
+  __block NSDictionary *blockChange = nil;
+  __block NSString *blockKeyPath = nil;
+  
+  // add mock observer
+  [controller observe:circle keyPath:radius initial:YES block:^(id observer, NSString *keyPath, id oldObject, id newObject) {
+    NSMutableDictionary *change = [@{NSKeyValueChangeNewKey : newObject,
+                                     NSKeyValueChangeKindKey : @(NSKeyValueChangeSetting)
+                                     } mutableCopy];
+    if(oldObject) change[NSKeyValueChangeOldKey] = oldObject;
+    blockObserver = observer;
+    blockObject = circle;
+    blockChange = [change copy];
+    blockKeyPath = keyPath;
+    blockCallCount++;
+  }];
+  
+  XCTAssert(1 == blockCallCount, @"unexpected block call count:%lu expected:%d", (unsigned long)blockCallCount, 1);
+  XCTAssert(blockObject == referenceObserver.lastObject, @"value:%@ expected:%@", blockObject, referenceObserver.lastObject);
+  XCTAssertEqualObjects(blockKeyPath,radius, @"value:%@ expected:%@", blockObject, referenceObserver.lastObject);
+  XCTAssertEqualObjects(blockChange, referenceObserver.lastChange, @"value:%@ expected:%@", blockChange, referenceObserver.lastChange);
+  
+  circle.radius = 1.0;
+  XCTAssert(2 == blockCallCount, @"unexpected block call count:%lu expected:%d", (unsigned long)blockCallCount, 2);
+  XCTAssert(blockObject == referenceObserver.lastObject, @"value:%@ expected:%@", blockObject, referenceObserver.lastObject);
+  XCTAssertEqualObjects(blockKeyPath,radius, @"value:%@ expected:%@", blockObject, referenceObserver.lastObject);
+  XCTAssertEqualObjects(blockChange, referenceObserver.lastChange, @"value:%@ expected:%@", blockChange, referenceObserver.lastChange);
+  
+  // cleanup
+  [circle removeObserver:referenceObserver forKeyPath:radius];
+}
+
 - (void)testNSKeyValueObservingOptionsNone
 {
   FBKVOTestCircle *circle = [FBKVOTestCircle circle];
@@ -284,7 +328,7 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
   circle.radius = 1.0;
   
   // verify unobserve all
-  [verifyCount(observer, times(1)) propertyDidChange];
+  [verifyCount(observer, times(2)) propertyDidChange];
 }
 
 - (void)testDeallocatedObserver
