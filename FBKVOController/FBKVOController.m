@@ -12,74 +12,85 @@
 #import <libkern/OSAtomic.h>
 #import <objc/message.h>
 
-#if !__has_feature(objc_arc)
-#error This file must be compiled with ARC. Convert your project to ARC or specify the -fobjc-arc flag.
+#if !__has_feature( objc_arc )
+    #error This file must be compiled with ARC. Convert your project to ARC or specify the -fobjc-arc flag.
 #endif
 
-#pragma mark Utilities -
+#pragma mark Utilities
 
-static NSString *describe_option(NSKeyValueObservingOptions option)
-{
-  switch (option) {
-    case NSKeyValueObservingOptionNew:
-      return @"NSKeyValueObservingOptionNew";
-      break;
-    case NSKeyValueObservingOptionOld:
-      return @"NSKeyValueObservingOptionOld";
-      break;
-    case NSKeyValueObservingOptionInitial:
-      return @"NSKeyValueObservingOptionInitial";
-      break;
-    case NSKeyValueObservingOptionPrior:
-      return @"NSKeyValueObservingOptionPrior";
-      break;
-    default:
-      NSCAssert(NO, @"unexpected option %tu", option);
-      break;
-  }
-  return nil;
-}
+static NSString* describe_option( NSKeyValueObservingOptions _Option )
+    {
+    switch ( _Option )
+        {
+        case NSKeyValueObservingOptionNew:
+            {
+            return @"NSKeyValueObservingOptionNew";
+            } break;
 
-static void append_option_description(NSMutableString *s, NSUInteger option)
-{
-  if (0 == s.length) {
-    [s appendString:describe_option(option)];
-  } else {
-    [s appendString:@"|"];
-    [s appendString:describe_option(option)];
-  }
-}
+        case NSKeyValueObservingOptionOld:
+            {
+            return @"NSKeyValueObservingOptionOld";
+            } break;
 
-static NSUInteger enumerate_flags(NSUInteger *ptrFlags)
-{
-  NSCAssert(ptrFlags, @"expected ptrFlags");
-  if (!ptrFlags) {
-    return 0;
-  }
+        case NSKeyValueObservingOptionInitial:
+            {
+            return @"NSKeyValueObservingOptionInitial";
+            } break;
+
+        case NSKeyValueObservingOptionPrior:
+            {
+            return @"NSKeyValueObservingOptionPrior";
+            } break;
+
+        default:
+            {
+            NSCAssert( NO, @"unexpected option %tu", _Option );
+            } break;
+        }
+
+    return nil;
+    }
+
+static void append_option_description( NSMutableString* _Desc, NSUInteger _Option )
+    {
+    if ( 0 == _Desc.length )
+        [ _Desc appendString: describe_option( _Option ) ];
+    else
+        [ _Desc appendString: @"|" ];
+
+    [ _Desc appendString: describe_option( _Option ) ];
+    }
+
+static NSUInteger enumerate_flags( NSUInteger* ptrFlags )
+    {
+    NSCAssert( ptrFlags, @"expected ptrFlags" );
+    if ( !ptrFlags )
+        return 0;
   
-  NSUInteger flags = *ptrFlags;
-  if (!flags) {
-    return 0;
-  }
+    NSUInteger flags = *ptrFlags;
+    if ( !flags )
+        return 0;
+
   
-  NSUInteger flag = 1 << __builtin_ctzl(flags);
-  flags &= ~flag;
-  *ptrFlags = flags;
-  return flag;
-}
+    NSUInteger flag = 1 << __builtin_ctzl( flags );
+    flags &= ~flag;
+    *ptrFlags = flags;
 
-static NSString *describe_options(NSKeyValueObservingOptions options)
-{
-  NSMutableString *s = [NSMutableString string];
-  NSUInteger option;
-  while (0 != (option = enumerate_flags(&options))) {
-    append_option_description(s, option);
-  }
-  return s;
-}
+    return flag;
+    }
 
-#pragma mark _FBKVOInfo -
+static NSString* describe_options( NSKeyValueObservingOptions options )
+    {
+    NSMutableString* s = [ NSMutableString string ];
+    NSUInteger option;
 
+    while ( 0 != ( option = enumerate_flags( &options ) ) )
+        append_option_description( s, option );
+
+    return s;
+    }
+
+#pragma mark _FBKVOInfo class
 /**
  @abstract The key-value observation info.
  @discussion Object equality is only used within the scope of a controller instance. Safely omit controller from equality definition.
@@ -88,92 +99,130 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
 @end
 
 @implementation _FBKVOInfo
-{
+    {
 @public
-  __weak FBKVOController *_controller;
-  NSString *_keyPath;
-  NSKeyValueObservingOptions _options;
-  SEL _action;
-  void *_context;
-  FBKVONotificationBlock _block;
-}
+    __weak FBKVOController*     _controller;
+    NSString*                   _keyPath;
+    NSKeyValueObservingOptions  _options;
+    FBKVONotificationBlock      _block;
+    SEL                         _action;
+    void*                       _context;
+    }
 
-- (instancetype)initWithController:(FBKVOController *)controller keyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options block:(FBKVONotificationBlock)block action:(SEL)action context:(void *)context
-{
-  self = [super init];
-  if (nil != self) {
-    _controller = controller;
-    _block = [block copy];
-    _keyPath = [keyPath copy];
-    _options = options;
-    _action = action;
-    _context = context;
-  }
-  return self;
-}
+- ( instancetype ) initWithController: ( FBKVOController* )_Controller
+                              keyPath: ( NSString* )_KeyPath
+                              options: ( NSKeyValueObservingOptions )_Options
+                                block: ( FBKVONotificationBlock )_Block
+                               action: ( SEL )_Action
+                              context: ( void* )_Context
+    {
+    if ( self = [ super init ] )
+        {
+        _controller = _Controller;
+        _block = [ _Block copy ];
+        _keyPath = [ _KeyPath copy ];
+        _options = _Options;
+        _action = _Action;
+        _context = _Context;
+        }
 
-- (instancetype)initWithController:(FBKVOController *)controller keyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options block:(FBKVONotificationBlock)block
-{
-  return [self initWithController:controller keyPath:keyPath options:options block:block action:NULL context:NULL];
-}
+    return self;
+    }
 
-- (instancetype)initWithController:(FBKVOController *)controller keyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options action:(SEL)action
-{
-  return [self initWithController:controller keyPath:keyPath options:options block:NULL action:action context:NULL];
-}
+- ( instancetype ) initWithController: ( FBKVOController* )_Controller
+                              keyPath: ( NSString* )_KeyPath
+                              options: ( NSKeyValueObservingOptions )_Options
+                                block: ( FBKVONotificationBlock )_Block
+    {
+    return [ self initWithController: _Controller
+                             keyPath: _KeyPath
+                             options: _Options
+                               block: _Block
+                              action: NULL
+                             context: NULL ];
+    }
 
-- (instancetype)initWithController:(FBKVOController *)controller keyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context
-{
-  return [self initWithController:controller keyPath:keyPath options:options block:NULL action:NULL context:context];
-}
+- ( instancetype ) initWithController: ( FBKVOController* )_Controller
+                              keyPath: ( NSString* )_KeyPath
+                              options: ( NSKeyValueObservingOptions )_Options
+                               action: ( SEL )_Action
+    {
+    return [ self initWithController: _Controller
+                             keyPath: _KeyPath
+                             options: _Options
+                               block: NULL
+                              action: _Action
+                             context: NULL ];
+    }
 
-- (instancetype)initWithController:(FBKVOController *)controller keyPath:(NSString *)keyPath
-{
-  return [self initWithController:controller keyPath:keyPath options:0 block:NULL action:NULL context:NULL];
-}
+- ( instancetype ) initWithController: ( FBKVOController* )_Controller
+                              keyPath: ( NSString* )_KeyPath
+                              options: ( NSKeyValueObservingOptions )_Options
+                              context: ( void* )_Context
+    {
+    return [ self initWithController: _Controller
+                             keyPath: _KeyPath
+                             options: _Options
+                               block: NULL
+                              action: NULL
+                             context: _Context ];
+    }
 
-- (NSUInteger)hash
-{
-  return [_keyPath hash];
-}
+- ( instancetype ) initWithController: ( FBKVOController* )_Controller
+                              keyPath: ( NSString* )_KeyPath
+    {
+    return [ self initWithController: _Controller
+                             keyPath: _KeyPath
+                             options: 0
+                               block: NULL
+                              action: NULL
+                             context: NULL ];
+    }
 
-- (BOOL)isEqual:(id)object
-{
-  if (nil == object) {
-    return NO;
-  }
-  if (self == object) {
-    return YES;
-  }
-  if (![object isKindOfClass:[self class]]) {
-    return NO;
-  }
-  return [_keyPath isEqualToString:((_FBKVOInfo *)object)->_keyPath];
-}
+- ( NSUInteger ) hash
+    {
+    return [ _keyPath hash ];
+    }
 
-- (NSString *)debugDescription
-{
-  NSMutableString *s = [NSMutableString stringWithFormat:@"<%@:%p keyPath:%@", NSStringFromClass([self class]), self, _keyPath];
-  if (0 != _options) {
-    [s appendFormat:@" options:%@", describe_options(_options)];
-  }
-  if (NULL != _action) {
-    [s appendFormat:@" action:%@", NSStringFromSelector(_action)];
-  }
-  if (NULL != _context) {
-    [s appendFormat:@" context:%p", _context];
-  }
-  if (NULL != _block) {
-    [s appendFormat:@" block:%p", _block];
-  }
-  [s appendString:@">"];
-  return s;
-}
+- ( BOOL ) isEqual: ( id )_Object
+    {
+    if ( !_Object )
+        return NO;
 
-@end
+    if ( self == _Object)
+        return YES;
 
-#pragma mark _FBKVOSharedController -
+    if ( ![ _Object isKindOfClass: [ self class ] ] )
+        return NO;
 
+    return [ _keyPath isEqualToString: ( ( _FBKVOInfo* )_Object )->_keyPath ];
+    }
+
+- ( NSString* ) debugDescription
+    {
+    NSMutableString* desc = [ NSMutableString stringWithFormat: @"<%@: %p   keyPath: %@"
+                                                              , NSStringFromClass( [ self class ] )
+                                                              , self
+                                                              , _keyPath ];
+    if ( 0 != _options )
+        [ desc appendFormat:@" options: %@", describe_options( _options ) ];
+
+    if ( _action )
+        [ desc appendFormat: @" action: %@", NSStringFromSelector( _action ) ];
+
+    if ( _context )
+        [ desc appendFormat: @" context: %p", _context ];
+
+    if ( _block )
+        [ desc appendFormat: @" block: %p", _block ];
+
+    [ desc appendString: @">" ];
+    return desc;
+    }
+
+@end // _FBKVOInfo class
+
+#pragma mark _FBKVOSharedController
 /**
  @abstract The shared KVO controller instance.
  @discussion Acts as a receptionist, receiving and forwarding KVO notifications.
@@ -181,10 +230,10 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
 @interface _FBKVOSharedController : NSObject
 
 /** A shared instance that never deallocates. */
-+ (instancetype)sharedController;
++ ( instancetype ) sharedController;
 
 /** observe an object, info pair */
-- (void)observe:(id)object info:(_FBKVOInfo *)info;
+- ( void ) observe: ( id )object info: ( _FBKVOInfo* )info;
 
 /** unobserve an object, info pair */
 - (void)unobserve:(id)object info:(_FBKVOInfo *)info;
@@ -195,44 +244,53 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
 @end
 
 @implementation _FBKVOSharedController
-{
-  NSHashTable *_infos;
-  OSSpinLock _lock;
-}
-
-+ (instancetype)sharedController
-{
-  static _FBKVOSharedController *_controller = nil;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    _controller = [[_FBKVOSharedController alloc] init];
-  });
-  return _controller;
-}
-
-- (instancetype)init
-{
-  self = [super init];
-  if (nil != self) {
-    NSHashTable *infos = [NSHashTable alloc];
-#ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
-    _infos = [infos initWithOptions:NSPointerFunctionsWeakMemory|NSPointerFunctionsObjectPointerPersonality capacity:0];
-#elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
-    if ([NSHashTable respondsToSelector:@selector(weakObjectsHashTable)]) {
-      _infos = [infos initWithOptions:NSPointerFunctionsWeakMemory|NSPointerFunctionsObjectPointerPersonality capacity:0];
-    } else {
-      // silence deprecated warnings
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-      _infos = [infos initWithOptions:NSPointerFunctionsZeroingWeakMemory|NSPointerFunctionsObjectPointerPersonality capacity:0];
-#pragma clang diagnostic pop
+    {
+    NSHashTable*    _infos;
+    OSSpinLock      _lock;
     }
-    
-#endif
-    _lock = OS_SPINLOCK_INIT;
-  }
-  return self;
-}
+
++ ( instancetype ) sharedController
+    {
+    static _FBKVOSharedController* _controller = nil;
+
+    static dispatch_once_t onceToken;
+    dispatch_once( &onceToken
+     , ^{
+        _controller = [ [ _FBKVOSharedController alloc ] init ];
+        } );
+
+    return _controller;
+    }
+
+- ( instancetype ) init
+    {
+    if ( self = [ super init ] )
+        {
+        NSHashTable* infos = [ NSHashTable alloc ];
+    #ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
+        _infos = [ infos initWithOptions: NSPointerFunctionsWeakMemory | NSPointerFunctionsObjectPointerPersonality
+                                capacity: 0 ];
+    #elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
+        if ( [ NSHashTable respondsToSelector: @selector( weakObjectsHashTable ) ] )
+            {
+            _infos = [ infos initWithOptions: NSPointerFunctionsWeakMemory | NSPointerFunctionsObjectPointerPersonality
+                                    capacity: 0 ];
+            }
+        else
+            {
+    // silence deprecated warnings
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            _infos = [ infos initWithOptions: NSPointerFunctionsZeroingWeakMemory | NSPointerFunctionsObjectPointerPersonality
+                                    capacity: 0 ];
+    #pragma clang diagnostic pop
+            }
+    #endif
+        _lock = OS_SPINLOCK_INIT;
+        }
+
+    return self;
+    }
 
 - (NSString *)debugDescription
 {
@@ -345,106 +403,117 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
 
 @end
 
-#pragma mark FBKVOController -
-
+#pragma mark FBKVOController class
 @implementation FBKVOController
-{
-  NSMapTable *_objectInfosMap;
-  OSSpinLock _lock;
-}
+    {
+    NSMapTable* _objectInfosMap;
+    OSSpinLock  _lock;
+    }
 
-#pragma mark Lifecycle -
+#pragma mark Lifecycle
++ ( instancetype ) controllerWithObserver: ( id )_Observer
+    {
+    return [ [ self alloc ] initWithObserver: _Observer ];
+    }
 
-+ (instancetype)controllerWithObserver:(id)observer
-{
-  return [[self alloc] initWithObserver:observer];
-}
+- ( instancetype ) initWithObserver: ( id )_Observer
+                     retainObserved: ( BOOL )_RetainObserved
+    {
+    if ( self = [ super init ] )
+        {
+        _observer = _Observer;
+        
+        NSPointerFunctionsOptions keyOptions = _RetainObserved ? ( NSMapTableStrongMemory | NSMapTableObjectPointerPersonality )
+                                                               : ( NSMapTableWeakMemory | NSMapTableObjectPointerPersonality );
 
-- (instancetype)initWithObserver:(id)observer retainObserved:(BOOL)retainObserved
-{
-  self = [super init];
-  if (nil != self) {
-    _observer = observer;
-    NSPointerFunctionsOptions keyOptions = retainObserved ? NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPointerPersonality : NSPointerFunctionsWeakMemory|NSPointerFunctionsObjectPointerPersonality;
-    _objectInfosMap = [[NSMapTable alloc] initWithKeyOptions:keyOptions valueOptions:NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPersonality capacity:0];
-    _lock = OS_SPINLOCK_INIT;
-  }
-  return self;
-}
+        _objectInfosMap = [ [ NSMapTable alloc ] initWithKeyOptions: keyOptions
+                                                       valueOptions: NSMapTableStrongMemory | NSMapTableObjectPointerPersonality
+                                                           capacity: 0 ];
+        _lock = OS_SPINLOCK_INIT;
+        }
 
-- (instancetype)initWithObserver:(id)observer
-{
-  return [self initWithObserver:observer retainObserved:YES];
-}
+    return self;
+    }
 
-- (void)dealloc
-{
-  [self unobserveAll];
-}
+- ( instancetype ) initWithObserver: ( id )_Observer
+    {
+    return [ self initWithObserver: _Observer
+                    retainObserved: YES ];
+    }
 
-#pragma mark Properties -
+- ( void ) dealloc
+    {
+    [ self unobserveAll ];
+    }
 
-- (NSString *)debugDescription
-{
-  NSMutableString *s = [NSMutableString stringWithFormat:@"<%@:%p", NSStringFromClass([self class]), self];
-  [s appendFormat:@" observer:<%@:%p>", NSStringFromClass([_observer class]), _observer];
+#pragma mark Properties
+- ( NSString* ) debugDescription
+    {
+    NSMutableString* desc = [ NSMutableString stringWithFormat: @"<%@: %p", NSStringFromClass( [ self class ] ), self ];
+    [ desc appendFormat: @"     observer: <%@: %p>", NSStringFromClass( [ _observer class ] ), _observer ];
   
-  // lock
-  OSSpinLockLock(&_lock);
+    // lock
+    OSSpinLockLock( &_lock );
   
-  if (0 != _objectInfosMap.count) {
-    [s appendString:@"\n  "];
-  }
+    if ( 0 != _objectInfosMap.count )
+        [ desc appendString: @"\n  " ];
   
-  for (id object in _objectInfosMap) {
-    NSMutableSet *infos = [_objectInfosMap objectForKey:object];
-    NSMutableArray *infoDescriptions = [NSMutableArray arrayWithCapacity:infos.count];
-    [infos enumerateObjectsUsingBlock:^(_FBKVOInfo *info, BOOL *stop) {
-      [infoDescriptions addObject:info.debugDescription];
-    }];
-    [s appendFormat:@"%@ -> %@", object, infoDescriptions];
-  }
-  
-  // unlock
-  OSSpinLockUnlock(&_lock);
-  
-  [s appendString:@">"];
-  return s;
-}
+    for ( id object in _objectInfosMap )
+        {
+        NSMutableSet* infos = [ _objectInfosMap objectForKey: object ];
+        NSMutableArray* infoDescriptions = [ NSMutableArray arrayWithCapacity: infos.count ];
 
-#pragma mark Utilities -
+        [ infos enumerateObjectsUsingBlock:
+            ^( _FBKVOInfo* _Info, BOOL* _Stop )
+                {
+                [ infoDescriptions addObject: _Info.debugDescription ];
+                } ];
 
-- (void)_observe:(id)object info:(_FBKVOInfo *)info
-{
-  // lock
-  OSSpinLockLock(&_lock);
+        [ desc appendFormat: @"%@ -> %@", object, infoDescriptions ];
+        }
   
-  NSMutableSet *infos = [_objectInfosMap objectForKey:object];
+    // unlock
+    OSSpinLockUnlock( &_lock );
   
-  // check for info existence
-  _FBKVOInfo *existingInfo = [infos member:info];
-  if (nil != existingInfo) {
-    NSLog(@"observation info already exists %@", existingInfo);
+    [ desc appendString: @">" ];
+    return desc;
+    }
+
+#pragma mark Internal Utilities
+- ( void ) _observe: ( id ) _Object
+               info: ( _FBKVOInfo* )_Info
+    {
+    // lock
+    OSSpinLockLock( &_lock );
+  
+    NSMutableSet* infos = [ _objectInfosMap objectForKey: _Object ];
+  
+    // check for info existence
+    _FBKVOInfo* existingInfo = [ infos member: _Info ];
+    if ( existingInfo )
+        {
+        NSLog( @"observation info already exists %@", existingInfo );
     
-    // unlock and return
-    OSSpinLockUnlock(&_lock);
-    return;
-  }
+        // unlock and return
+        OSSpinLockUnlock( &_lock );
+        return;
+        }
   
-  // lazilly create set of infos
-  if (nil == infos) {
-    infos = [NSMutableSet set];
-    [_objectInfosMap setObject:infos forKey:object];
-  }
+    // lazilly create set of infos
+    if ( !infos )
+        {
+        infos = [ NSMutableSet set ];
+        [ _objectInfosMap setObject: infos forKey: _Object ];
+        }
   
-  // add info and oberve
-  [infos addObject:info];
+    // add info and oberve
+    [ infos addObject: _Info ];
   
-  // unlock prior to callout
-  OSSpinLockUnlock(&_lock);
+    // unlock prior to callout
+    OSSpinLockUnlock( &_lock );
   
-  [[_FBKVOSharedController sharedController] observe:object info:info];
-}
+    [ [ _FBKVOSharedController sharedController ] observe: _Object info: _Info ];
+    }
 
 - (void)_unobserve:(id)object info:(_FBKVOInfo *)info
 {
@@ -512,8 +581,7 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
   }
 }
 
-#pragma mark API -
-
+#pragma mark API
 - (void)observe:(id)object keyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options block:(FBKVONotificationBlock)block
 {
   NSAssert(0 != keyPath.length && NULL != block, @"missing required parameters observe:%@ keyPath:%@ block:%p", object, keyPath, block);

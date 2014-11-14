@@ -10,14 +10,14 @@
 #import <Foundation/Foundation.h>
 #import "FBKVOController.h"
 
-@interface NSObject (FBKVOController)
+@interface NSObject ( FBKVOController )
 
 /**
  @abstract Lazy-loaded FBKVOController for use with any object
  @return FBKVOController associated with this object, creating one if necessary
  @discussion This makes it convenient to simply create and forget a FBKVOController, and when this object gets dealloc'd, so will the associated controller and the observation info.
  */
-@property (nonatomic, strong) FBKVOController *KVOController;
-@property (nonatomic, strong) FBKVOController *KVOControllerNonRetaining;
+@property ( nonatomic, strong ) FBKVOController* KVOController;
+@property ( nonatomic, strong ) FBKVOController* KVOControllerNonRetaining;
 
 @end
