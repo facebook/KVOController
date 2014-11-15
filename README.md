@@ -22,10 +22,11 @@ FBKVOController *KVOController = [FBKVOController controllerWithObserver:self];
 self.KVOController = KVOController;
 
 // observe clock date property
-[self.KVOController observe:clock keyPath:@"date" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew block:^(ClockView *clockView, Clock *clock, NSDictionary *change) {
+[self.KVOController observe:clock keyPath:@"date" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew block:^(NSString* keyPath, ClockView *clockView, Clock *clock, NSDictionary *change) {
 
   // update clock view with new value
-  clockView.date = change[NSKeyValueChangeNewKey];
+  if ( [ keyPath isEqualToString: @"date" ] )
+    clockView.date = change[NSKeyValueChangeNewKey];
 }];
 ```
 
@@ -37,7 +38,7 @@ Note: the observer specified must support weak references. The zeroing weak refe
 For an even easier usage, just `#import <KVOController/NSObject+FBKVOController.h` for an automatic `KVOController` property on all objects.
 
 ```objc
-[self.KVOController observe:clock keyPath:@"date" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew action:@selector(updateClockWithDateChange:)];
+[self.KVOController observe:clock keyPath:@"date" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew action:@selector(updateClockWithDateChange:keyPath:object:)];
 ```
 
 ## Prerequisites

@@ -329,12 +329,16 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
         
         // dispatch custom block or action, fall back to default action
         if (info->_block) {
-          info->_block(observer, object, change);
+          info->_block(keyPath, observer, object, change);
         } else if (info->_action) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-          [observer performSelector:info->_action withObject:change withObject:object];
-#pragma clang diagnostic pop
+            NSInvocation* invocation = [ NSInvocation invocationWithMethodSignature: [ observer methodSignatureForSelector: info->_action ] ];
+            [ invocation setSelector: info->_action ];
+
+            [ invocation setArgument: &change atIndex: 2 ];
+            [ invocation setArgument: &keyPath atIndex: 3 ];
+            [ invocation setArgument: &object atIndex: 4 ];
+
+            [ invocation invokeWithTarget: observer ];
         } else {
           [observer observeValueForKeyPath:keyPath ofObject:object change:change context:info->_context];
         }

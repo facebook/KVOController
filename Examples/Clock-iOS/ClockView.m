@@ -49,10 +49,11 @@ static NSDictionary *layer_style(ClockViewStyle viewStyle)
     _KVOController = [FBKVOController controllerWithObserver:self];
     
     // handle clock change, including initial value
-    [_KVOController observe:clock keyPath:@"date" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew block:^(ClockView *clockView, Clock *clock, NSDictionary *change) {
+    [_KVOController observe:clock keyPath:@"date" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew block:^(NSString* keyPath, ClockView *clockView, Clock *clock, NSDictionary *change) {
       
       // update observer with new value
-      CLOCK_LAYER(clockView).date = change[NSKeyValueChangeNewKey];
+      if ( [ keyPath isEqualToString: @"date" ] )
+        CLOCK_LAYER(clockView).date = change[NSKeyValueChangeNewKey];
     }];
   }
   return self;
