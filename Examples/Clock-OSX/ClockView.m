@@ -35,10 +35,11 @@
     _KVOController = [FBKVOController controllerWithObserver:self];
 
     // handle clock change, including initial value
-    [_KVOController observe:clock keyPath:@"date" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew block:^(ClockView *clockView, Clock *clock, NSDictionary *change) {
+    [_KVOController observe:clock keyPath:@"date" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew block:^(NSString* keyPath, ClockView *clockView, Clock *clock, NSDictionary *change) {
 
       // update observer with new value
-      clockView.dateValue = change[NSKeyValueChangeNewKey];
+      if ( [ keyPath isEqualToString: @"date" ] )
+        clockView.dateValue = change[NSKeyValueChangeNewKey];
     }];
   }
   return self;
