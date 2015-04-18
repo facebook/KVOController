@@ -11,14 +11,47 @@
 
 #import <FBKVOController/NSObject+FBKVOController.h>
 
+#import "FBKVOTesting.h"
+
 @interface NSObject_FBKVOControllerTests : XCTestCase
 @end
 
 @implementation NSObject_FBKVOControllerTests
 
+- (void)setUp
+{
+  [super setUp];
+  FBKVOTestCircleDeallocatingWasDeallocated = NO;
+}
+
 - (void)testFBKVOControllerOnAnyObjectIsNotNil {
-  NSObject *object = [[NSObject alloc] init];
-  XCTAssertNotNil(object.KVOController);
+  // Arrange: Begin observing an object using a non-retaining observer.
+  NSObject *observer = [NSObject new];
+  FBKVOTestCircleDeallocating *deallocating = [FBKVOTestCircleDeallocating circle];
+  [observer.KVOController observe:deallocating keyPath:@"radius" options:0 block:^(id observer, id object, NSDictionary *change) {
+    // noop
+  }];
+
+  // Act: Decrement the reference count of the object we're observing.
+  deallocating = nil;
+
+  XCTAssertFalse(FBKVOTestCircleDeallocatingWasDeallocated,
+                 @"The object should not have been deallocated because its observer was retaining.");
+}
+
+- (void)testFBKVOControllerNotRetainingOnAnyObjectIsNotNil {
+  // Arrange: Begin observing an object using a non-retaining observer.
+  NSObject *observer = [NSObject new];
+  FBKVOTestCircleDeallocating *deallocating = [FBKVOTestCircleDeallocating circle];
+  [observer.KVOControllerNonRetaining observe:deallocating keyPath:@"radius" options:0 block:^(id observer, id object, NSDictionary *change) {
+    // noop
+  }];
+
+  // Act: Release the object we're observing.
+  deallocating = nil;
+
+  XCTAssertTrue(FBKVOTestCircleDeallocatingWasDeallocated,
+                @"The object should have been deallocated because its observer was non-retaining.");
 }
 
 @end

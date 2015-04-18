@@ -23,6 +23,17 @@
 
 @end
 
+BOOL FBKVOTestCircleDeallocatingWasDeallocated = NO;
+
+@implementation FBKVOTestCircleDeallocating
+
+- (void)dealloc
+{
+  FBKVOTestCircleDeallocatingWasDeallocated = YES;
+}
+
+@end
+
 @implementation FBKVOTestObserver
 
 + (instancetype)observer
