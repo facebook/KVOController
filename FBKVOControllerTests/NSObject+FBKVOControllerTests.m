@@ -24,7 +24,8 @@
   FBKVOTestCircleDeallocatingWasDeallocated = NO;
 }
 
-- (void)testFBKVOControllerOnAnyObjectIsNotNil {
+- (void)testFBKVOControllerOnAnyObjectIsNotNil
+{
   // Arrange: Begin observing an object using a non-retaining observer.
   NSObject *observer = [NSObject new];
   FBKVOTestCircleDeallocating *deallocating = [FBKVOTestCircleDeallocating circle];
@@ -39,7 +40,8 @@
                  @"The object should not have been deallocated because its observer was retaining.");
 }
 
-- (void)testFBKVOControllerNotRetainingOnAnyObjectIsNotNil {
+- (void)testFBKVOControllerNotRetainingOnAnyObjectIsNotNil
+{
   // Arrange: Begin observing an object using a non-retaining observer.
   NSObject *observer = [NSObject new];
   FBKVOTestCircleDeallocating *deallocating = [FBKVOTestCircleDeallocating circle];
