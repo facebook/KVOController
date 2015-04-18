@@ -25,6 +25,7 @@
 		46B05A2E1A076AD70022AB70 /* NSObject+FBKVOController.m in Sources */ = {isa = PBXBuildFile; fileRef = 46B05A2D1A076AD70022AB70 /* NSObject+FBKVOController.m */; };
 		46B05A301A076CC40022AB70 /* NSObject+FBKVOController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 46B05A2F1A076ADD0022AB70 /* NSObject+FBKVOController.h */; };
 		C2F52F758CAD49A0B9569C07 /* libPods-FBKVOControllerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CEF702BB5574A90B448BF09 /* libPods-FBKVOControllerTests.a */; };
+		DA350F251AE2B8C6001B2CCB /* NSObject+FBKVOControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DA350F241AE2B8C6001B2CCB /* NSObject+FBKVOControllerTests.m */; };
 		EC8BB5AE18A5792D00EB2793 /* FBKVOTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = EC8BB5AD18A5792D00EB2793 /* FBKVOTesting.m */; };
 		ECEA610218A49C620064AFF4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECEA610118A49C620064AFF4 /* Foundation.framework */; };
 		ECEA610718A49C620064AFF4 /* FBKVOController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = ECEA610618A49C620064AFF4 /* FBKVOController.h */; };
@@ -74,6 +75,7 @@
 		46B05A2D1A076AD70022AB70 /* NSObject+FBKVOController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+FBKVOController.m"; sourceTree = "<group>"; };
 		46B05A2F1A076ADD0022AB70 /* NSObject+FBKVOController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+FBKVOController.h"; sourceTree = "<group>"; };
 		5CEF702BB5574A90B448BF09 /* libPods-FBKVOControllerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FBKVOControllerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA350F241AE2B8C6001B2CCB /* NSObject+FBKVOControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+FBKVOControllerTests.m"; sourceTree = "<group>"; };
 		EC8BB5AC18A5792D00EB2793 /* FBKVOTesting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBKVOTesting.h; sourceTree = "<group>"; };
 		EC8BB5AD18A5792D00EB2793 /* FBKVOTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBKVOTesting.m; sourceTree = "<group>"; };
 		EC8BB5B318A5A1EE00EB2793 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				ECEA611D18A49C620064AFF4 /* FBKVOControllerTests.m */,
+				DA350F241AE2B8C6001B2CCB /* NSObject+FBKVOControllerTests.m */,
 				EC8BB5AC18A5792D00EB2793 /* FBKVOTesting.h */,
 				EC8BB5AD18A5792D00EB2793 /* FBKVOTesting.m */,
 				ECEA611818A49C620064AFF4 /* Supporting Files */,
@@ -357,6 +360,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ECEA611E18A49C620064AFF4 /* FBKVOControllerTests.m in Sources */,
+				DA350F251AE2B8C6001B2CCB /* NSObject+FBKVOControllerTests.m in Sources */,
 				EC8BB5AE18A5792D00EB2793 /* FBKVOTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
