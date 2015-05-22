@@ -365,7 +365,7 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
   self = [super init];
   if (nil != self) {
     _observer = observer;
-    NSPointerFunctionsOptions keyOptions = retainObserved ? NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPointerPersonality : NSPointerFunctionsWeakMemory|NSPointerFunctionsObjectPointerPersonality;
+    NSPointerFunctionsOptions keyOptions = retainObserved ? NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPointerPersonality : NSPointerFunctionsOpaqueMemory|NSPointerFunctionsObjectPointerPersonality;
     _objectInfosMap = [[NSMapTable alloc] initWithKeyOptions:keyOptions valueOptions:NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPersonality capacity:0];
     _lock = OS_SPINLOCK_INIT;
   }
