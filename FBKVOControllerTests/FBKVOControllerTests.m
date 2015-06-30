@@ -477,10 +477,4 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
   circle.radius = 1.0;
 }
 
-- (void)testTravisContinuousIntegrationHappyDance
-{
-  // happy dance
-  return;
-}
-
 @end

@@ -19,6 +19,18 @@
 @end
 
 /**
+ This global boolean is set to YES whenever an instance of
+ FBKVOTestCircleDeallocating is deallocated.
+ */
+extern BOOL FBKVOTestCircleDeallocatingWasDeallocated;
+
+/**
+ Circle test object that sets some global state when it's deallocated.
+ */
+@interface FBKVOTestCircleDeallocating : FBKVOTestCircle
+@end
+
+/**
  Observer protocol for mocking.
  */
 @protocol FBKVOTestObserving <NSObject>
