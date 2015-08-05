@@ -3,6 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/facebook/KVOController/badge.svg?branch=master)](https://coveralls.io/r/facebook/KVOController?branch=master)
 [![Version](https://cocoapod-badges.herokuapp.com/v/KVOController/badge.png)](http://cocoadocs.org/docsets/KVOController)
 [![Platform](https://cocoapod-badges.herokuapp.com/p/KVOController/badge.png)](http://cocoadocs.org/docsets/KVOController)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 Key-value observing is a particularly useful technique for communicating between layers in a Model-View-Controller application. KVOController builds on Cocoa's time-tested key-value observing implementation. It offers a simple, modern API, that is also thread safe. Benefits include:
 
@@ -50,15 +51,21 @@ KVOController takes advantage of recent Objective-C runtime advances, including 
 
 ## Installation
 
-To install using CocoaPods, add the following to your project Podfile:
+To install using [CocoaPods](https://github.com/cocoapods/cocoapods), add the following to your project Podfile:
 
 ```ruby
 pod 'KVOController'
 ```
 
+To install using [Carthage](https://github.com/carthage/carthage), add the following to your project Cartfile:
+
+```
+github "facebook/KVOController"
+```
+
 Alternatively, drag and drop FBKVOController.h and FBKVOController.m into your Xcode project, agreeing to copy files if needed. For iOS applications, you can choose to link against the static library target of the KVOController project.
 
-Having installed using CocoaPods, add the following to import in Objective-C:
+Having installed using CocoaPods or Carthage, add the following to import in Objective-C:
 ```objective-c
 #import <KVOController/FBKVOController.h>
 ```
