@@ -148,7 +148,15 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
   if (![object isKindOfClass:[self class]]) {
     return NO;
   }
-  return [_keyPath isEqualToString:((_FBKVOInfo *)object)->_keyPath];
+    
+  _FBKVOInfo *infoObject = (_FBKVOInfo *)object;
+  if (![_keyPath isEqualToString:infoObject->_keyPath]) {
+      return NO;
+  }
+    
+  return ([NSStringFromSelector(_action) isEqualToString:NSStringFromSelector(infoObject->_action)] ||
+          _block == infoObject->_block
+          );
 }
 
 - (NSString *)debugDescription

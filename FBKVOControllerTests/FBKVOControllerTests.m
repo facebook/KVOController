@@ -308,7 +308,7 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
                                                   context:NULL];
 }
 
-- (void)testCustomActionOptionsBasic
+- (void)testMultipleObservingSameValue
 {
   FBKVOTestCircle *circle = [FBKVOTestCircle circle];
   id<FBKVOTestObserving> observer = mockProtocol(@protocol(FBKVOTestObserving));
@@ -316,6 +316,12 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
   
   // add mock observer
   [controller observe:circle keyPath:radius options:optionsBasic action:@selector(propertyDidChange)];
+    
+  __block float blockRadius = FLT_MIN;
+  [controller observe:circle keyPath:radius options:optionsBasic block:^(id observer, FBKVOTestCircle *object, NSDictionary *change) {
+      
+      blockRadius = object.radius;
+  }];
 
   // verify initial
   [verifyCount(observer, times(1)) propertyDidChange];
@@ -323,6 +329,8 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
   // verify mutation
   circle.radius = 1.0;
   [verifyCount(observer, times(2)) propertyDidChange];
+    
+  XCTAssertEqualWithAccuracy(circle.radius, blockRadius, FLT_EPSILON);
 }
 
 - (void)testCustomActionWithChangeOptionsBasic
