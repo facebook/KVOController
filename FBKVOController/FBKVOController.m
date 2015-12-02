@@ -70,12 +70,12 @@ static NSUInteger enumerate_flags(NSUInteger *ptrFlags)
 
 static NSString *describe_options(NSKeyValueObservingOptions options)
 {
-  NSMutableString *s = [NSMutableString string];
+  NSMutableString *description = [NSMutableString string];
   NSUInteger option;
   while (0 != (option = enumerate_flags(&options))) {
-    append_option_description(s, option);
+    append_option_description(description, option);
   }
-  return s;
+  return [description copy];
 }
 
 #pragma mark _FBKVOInfo -
@@ -153,21 +153,21 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
 
 - (NSString *)debugDescription
 {
-  NSMutableString *s = [NSMutableString stringWithFormat:@"<%@:%p keyPath:%@", NSStringFromClass([self class]), self, _keyPath];
+  NSMutableString *description = [NSMutableString stringWithFormat:@"<%@:%p keyPath:%@", NSStringFromClass([self class]), self, _keyPath];
   if (0 != _options) {
-    [s appendFormat:@" options:%@", describe_options(_options)];
+    [description appendFormat:@" options:%@", describe_options(_options)];
   }
   if (NULL != _action) {
-    [s appendFormat:@" action:%@", NSStringFromSelector(_action)];
+    [description appendFormat:@" action:%@", NSStringFromSelector(_action)];
   }
   if (NULL != _context) {
-    [s appendFormat:@" context:%p", _context];
+    [description appendFormat:@" context:%p", _context];
   }
   if (NULL != _block) {
-    [s appendFormat:@" block:%p", _block];
+    [description appendFormat:@" block:%p", _block];
   }
-  [s appendString:@">"];
-  return s;
+  [description appendString:@">"];
+  return [description copy];
 }
 
 @end
@@ -236,7 +236,7 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
 
 - (NSString *)debugDescription
 {
-  NSMutableString *s = [NSMutableString stringWithFormat:@"<%@:%p", NSStringFromClass([self class]), self];
+  NSMutableString *description = [NSMutableString stringWithFormat:@"<%@:%p", NSStringFromClass([self class]), self];
   
   // lock
   OSSpinLockLock(&_lock);
@@ -246,13 +246,14 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
     [infoDescriptions addObject:info.debugDescription];
   }
   
-  [s appendFormat:@" contexts:%@", infoDescriptions];
+  [description appendFormat:@" contexts:%@", infoDescriptions];
   
   // unlock
   OSSpinLockUnlock(&_lock);
   
-  [s appendString:@">"];
-  return s;
+  [description appendString:@">"];
+
+  return [description copy];
 }
 
 - (void)observe:(id)object info:(_FBKVOInfo *)info
@@ -386,14 +387,14 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
 
 - (NSString *)debugDescription
 {
-  NSMutableString *s = [NSMutableString stringWithFormat:@"<%@:%p", NSStringFromClass([self class]), self];
-  [s appendFormat:@" observer:<%@:%p>", NSStringFromClass([_observer class]), _observer];
+  NSMutableString *description = [NSMutableString stringWithFormat:@"<%@:%p", NSStringFromClass([self class]), self];
+  [description appendFormat:@" observer:<%@:%p>", NSStringFromClass([_observer class]), _observer];
   
   // lock
   OSSpinLockLock(&_lock);
   
   if (0 != _objectInfosMap.count) {
-    [s appendString:@"\n  "];
+    [description appendString:@"\n  "];
   }
   
   for (id object in _objectInfosMap) {
@@ -402,14 +403,15 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
     [infos enumerateObjectsUsingBlock:^(_FBKVOInfo *info, BOOL *stop) {
       [infoDescriptions addObject:info.debugDescription];
     }];
-    [s appendFormat:@"%@ -> %@", object, infoDescriptions];
+    [description appendFormat:@"%@ -> %@", object, infoDescriptions];
   }
   
   // unlock
   OSSpinLockUnlock(&_lock);
   
-  [s appendString:@">"];
-  return s;
+  [description appendString:@">"];
+
+  return [description copy];
 }
 
 #pragma mark Utilities -
