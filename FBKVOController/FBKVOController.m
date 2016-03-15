@@ -355,7 +355,33 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
 
 @end
 
+#pragma mark FBKVOControllerObserverHandler -
+
+@interface FBKVOControllerObserverHandler : NSObject
+
+@property (nullable, atomic, assign, readonly) id theObject;
+
+@end
+
+@implementation FBKVOControllerObserverHandler
+
+- (instancetype)initWithTheObject:(id)theObject
+{
+  if (self = [super init]) {
+    _theObject = theObject;
+  }
+  return self;
+}
+
+@end
+
 #pragma mark FBKVOController -
+
+@interface FBKVOController ()
+
+@property (nullable, atomic, strong) FBKVOControllerObserverHandler *observerHandler;
+
+@end
 
 @implementation FBKVOController
 {
@@ -531,6 +557,14 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
     return;
   }
   
+  if (object == self.observer) {
+    if (self.observerHandler == nil) {
+      self.observerHandler = [[FBKVOControllerObserverHandler alloc] initWithTheObject:self.observer];
+    }
+    keyPath = [@[NSStringFromSelector(@selector(theObject)), keyPath] componentsJoinedByString:@"."];
+    object = self.observerHandler;
+  }
+  
   // create info
   _FBKVOInfo *info = [[_FBKVOInfo alloc] initWithController:self keyPath:keyPath options:options block:block];
   
@@ -559,6 +593,14 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
     return;
   }
   
+  if (object == self.observer) {
+    if (self.observerHandler == nil) {
+      self.observerHandler = [[FBKVOControllerObserverHandler alloc] initWithTheObject:self.observer];
+    }
+    keyPath = [@[NSStringFromSelector(@selector(theObject)), keyPath] componentsJoinedByString:@"."];
+    object = self.observerHandler;
+  }
+  
   // create info
   _FBKVOInfo *info = [[_FBKVOInfo alloc] initWithController:self keyPath:keyPath options:options action:action];
   
@@ -584,6 +626,14 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
   NSAssert(0 != keyPath.length, @"missing required parameters observe:%@ keyPath:%@", object, keyPath);
   if (nil == object || 0 == keyPath.length) {
     return;
+  }
+  
+  if (object == self.observer) {
+    if (self.observerHandler == nil) {
+      self.observerHandler = [[FBKVOControllerObserverHandler alloc] initWithTheObject:self.observer];
+    }
+    keyPath = [@[NSStringFromSelector(@selector(theObject)), keyPath] componentsJoinedByString:@"."];
+    object = self.observerHandler;
   }
   
   // create info
