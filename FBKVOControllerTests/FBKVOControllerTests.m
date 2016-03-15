@@ -477,6 +477,19 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
   circle.radius = 1.0;
 }
 
+- (void)testSelfObserverToUnobserve
+{
+  __weak FBKVOTestCircle *weakCircle;
+  
+  @autoreleasepool {
+    FBKVOTestCircle *circle = [FBKVOTestCircle circle];
+    [circle.KVOControllerNonRetaining observe:circle keyPath:radius options:optionsBasic action:@selector(self)];
+    weakCircle = circle;
+  }
+  
+  XCTAssertNil(weakCircle, @"");
+}
+
 - (void)testTravisContinuousIntegrationHappyDance
 {
   // happy dance
