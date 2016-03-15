@@ -657,6 +657,11 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
 
 - (void)unobserve:(nullable id)object keyPath:(NSString *)keyPath
 {
+  if (object == self.observer) {
+    keyPath = [keyPath substringFromIndex:NSStringFromSelector(@selector(theObject)).length + 1];
+    object = self.observerHandler;
+  }
+  
   // create representative info
   _FBKVOInfo *info = [[_FBKVOInfo alloc] initWithController:self keyPath:keyPath];
   
@@ -668,6 +673,10 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
 {
   if (nil == object) {
     return;
+  }
+  
+  if (object == self.observer) {
+    object = self.observerHandler;
   }
   
   [self _unobserve:object];
