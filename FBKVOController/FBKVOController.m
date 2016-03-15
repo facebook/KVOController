@@ -355,7 +355,33 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
 
 @end
 
+#pragma mark FBKVOControllerObserverHandler -
+
+@interface FBKVOControllerObserverHandler : NSObject
+
+@property (nullable, atomic, assign, readonly) id theObject;
+
+@end
+
+@implementation FBKVOControllerObserverHandler
+
+- (instancetype)initWithTheObject:(id)theObject
+{
+  if (self = [super init]) {
+    _theObject = theObject;
+  }
+  return self;
+}
+
+@end
+
 #pragma mark FBKVOController -
+
+@interface FBKVOController ()
+
+@property (nullable, atomic, strong) FBKVOControllerObserverHandler *observerHandler;
+
+@end
 
 @implementation FBKVOController
 {
@@ -531,6 +557,14 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
     return;
   }
   
+  if (object == self.observer) {
+    if (self.observerHandler == nil) {
+      self.observerHandler = [[FBKVOControllerObserverHandler alloc] initWithTheObject:self.observer];
+    }
+    keyPath = [@[NSStringFromSelector(@selector(theObject)), keyPath] componentsJoinedByString:@"."];
+    object = self.observerHandler;
+  }
+  
   // create info
   _FBKVOInfo *info = [[_FBKVOInfo alloc] initWithController:self keyPath:keyPath options:options block:block];
   
@@ -557,6 +591,14 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
   NSAssert([_observer respondsToSelector:action], @"%@ does not respond to %@", _observer, NSStringFromSelector(action));
   if (nil == object || 0 == keyPath.length || NULL == action) {
     return;
+  }
+  
+  if (object == self.observer) {
+    if (self.observerHandler == nil) {
+      self.observerHandler = [[FBKVOControllerObserverHandler alloc] initWithTheObject:self.observer];
+    }
+    keyPath = [@[NSStringFromSelector(@selector(theObject)), keyPath] componentsJoinedByString:@"."];
+    object = self.observerHandler;
   }
   
   // create info
@@ -586,6 +628,14 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
     return;
   }
   
+  if (object == self.observer) {
+    if (self.observerHandler == nil) {
+      self.observerHandler = [[FBKVOControllerObserverHandler alloc] initWithTheObject:self.observer];
+    }
+    keyPath = [@[NSStringFromSelector(@selector(theObject)), keyPath] componentsJoinedByString:@"."];
+    object = self.observerHandler;
+  }
+  
   // create info
   _FBKVOInfo *info = [[_FBKVOInfo alloc] initWithController:self keyPath:keyPath options:options context:context];
   
@@ -607,6 +657,11 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
 
 - (void)unobserve:(nullable id)object keyPath:(NSString *)keyPath
 {
+  if (object == self.observer) {
+    keyPath = [keyPath substringFromIndex:NSStringFromSelector(@selector(theObject)).length + 1];
+    object = self.observerHandler;
+  }
+  
   // create representative info
   _FBKVOInfo *info = [[_FBKVOInfo alloc] initWithController:self keyPath:keyPath];
   
@@ -618,6 +673,10 @@ static NSString *describe_options(NSKeyValueObservingOptions options)
 {
   if (nil == object) {
     return;
+  }
+  
+  if (object == self.observer) {
+    object = self.observerHandler;
   }
   
   [self _unobserve:object];
