@@ -43,9 +43,10 @@ NS_ASSUME_NONNULL_BEGIN
  @abstract Block called on key-value change notification.
  @param observer The observer of the change.
  @param object The object changed.
+ @param keyPath The keyPath changed.
  @param change The change dictionary.
  */
-typedef void (^FBKVONotificationBlock)(id _Nullable observer, id object, NSDictionary<NSString *, id> *change);
+typedef void (^FBKVONotificationBlock)(id _Nullable observer, id object, NSString* keyPath, NSDictionary<NSString *, id> *change);
 
 /**
  @abstract FBKVOController makes Key-Value Observing simpler and safer.

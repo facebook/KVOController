@@ -372,7 +372,7 @@ typedef NS_ENUM(uint8_t, _FBKVOInfoState) {
 
         // dispatch custom block or action, fall back to default action
         if (info->_block) {
-          info->_block(observer, object, change);
+          info->_block(observer, object, keyPath, change);
         } else if (info->_action) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"

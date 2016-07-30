@@ -23,7 +23,7 @@ FBKVOController *KVOController = [FBKVOController controllerWithObserver:self];
 self.KVOController = KVOController;
 
 // observe clock date property
-[self.KVOController observe:clock keyPath:@"date" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew block:^(ClockView *clockView, Clock *clock, NSDictionary *change) {
+[self.KVOController observe:clock keyPath:@"date" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew block:^(ClockView *clockView, Clock *clock, NSString *keyPath, NSDictionary *change) {
 
   // update clock view with new value
   clockView.date = change[NSKeyValueChangeNewKey];
