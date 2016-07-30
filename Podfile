@@ -1,6 +1,6 @@
 source 'https://github.com/CocoaPods/Specs.git'
-xcodeproj 'FBKVOController.xcodeproj'
+project 'FBKVOController.xcodeproj'
 
-target :FBKVOControllerTests, :exclusive => true do
+target :FBKVOControllerTests do
   pod 'OCMockito', '~> 1.0'
 end

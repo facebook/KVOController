@@ -1,0 +1,10 @@
+coverage:
+  ignore:
+    - FBKVOControllerTests/*
+  status:
+    patch: false
+    changes: false
+    project:
+      default:
+        target: 60
+comment: false

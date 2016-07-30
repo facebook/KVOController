@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ECEA60FD18A49C620064AFF4"
-               BuildableName = "libFBKVOController.a"
-               BlueprintName = "FBKVOController"
+               BlueprintIdentifier = "81EC40C51CA3620A00BD9226"
+               BuildableName = "KVOController.framework"
+               BlueprintName = "FBKVOController-iOS-Dynamic"
                ReferencedContainer = "container:FBKVOController.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,16 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ECEA610D18A49C620064AFF4"
-               BuildableName = "FBKVOControllerTests.xctest"
-               BlueprintName = "FBKVOControllerTests"
-               ReferencedContainer = "container:FBKVOController.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <AdditionalOptions>
       </AdditionalOptions>
@@ -55,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "ECEA60FD18A49C620064AFF4"
-            BuildableName = "libFBKVOController.a"
-            BlueprintName = "FBKVOController"
+            BlueprintIdentifier = "81EC40C51CA3620A00BD9226"
+            BuildableName = "KVOController.framework"
+            BlueprintName = "FBKVOController-iOS-Dynamic"
             ReferencedContainer = "container:FBKVOController.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -70,6 +60,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "81EC40C51CA3620A00BD9226"
+            BuildableName = "KVOController.framework"
+            BlueprintName = "FBKVOController-iOS-Dynamic"
+            ReferencedContainer = "container:FBKVOController.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

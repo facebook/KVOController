@@ -1,9 +1,8 @@
 # [KVOController](https://github.com/facebook/KVOController)
-[![Build Status](https://travis-ci.org/facebook/KVOController.png?branch=master)](https://travis-ci.org/facebook/KVOController)
-[![Coverage Status](https://coveralls.io/repos/facebook/KVOController/badge.svg?branch=master)](https://coveralls.io/r/facebook/KVOController?branch=master)
-[![Version](https://cocoapod-badges.herokuapp.com/v/KVOController/badge.png)](http://cocoadocs.org/docsets/KVOController)
-[![Platform](https://cocoapod-badges.herokuapp.com/p/KVOController/badge.png)](http://cocoadocs.org/docsets/KVOController)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Build Status](https://img.shields.io/travis/facebook/KVOController/master.svg?style=flat)](https://travis-ci.org/facebook/KVOController)
+[![Coverage Status](https://img.shields.io/codecov/c/github/facebook/KVOController/master.svg)](https://codecov.io/github/facebook/KVOController)
+[![Version](https://img.shields.io/cocoapods/v/KVOController.svg?style=flat)](http://cocoadocs.org/docsets/KVOController)
+[![Platform](https://img.shields.io/cocoapods/p/KVOController.svg?style=flat)](http://cocoadocs.org/docsets/KVOController)
 
 Key-value observing is a particularly useful technique for communicating between layers in a Model-View-Controller application. KVOController builds on Cocoa's time-tested key-value observing implementation. It offers a simple, modern API, that is also thread safe. Benefits include:
 
@@ -36,7 +35,7 @@ While simple, the above example is complete. A clock view creates a KVO controll
 Note: the observer specified must support weak references. The zeroing weak reference guards against notification of a deallocated observer instance.
 
 #### NSObject Category
-For an even easier usage, just `#import <KVOController/FBKVOController.h>` for an automatic `KVOController` property on all objects.
+For an even easier usage, just `#import <KVOController/NSObject+FBKVOController.h>` for an automatic `KVOController` property on all objects.
 
 ```objc
 [self.KVOController observe:clock keyPath:@"date" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew action:@selector(updateClockWithDateChange:)];
@@ -67,7 +66,7 @@ Alternatively, drag and drop FBKVOController.h and FBKVOController.m into your X
 
 Having installed using CocoaPods or Carthage, add the following to import in Objective-C:
 ```objective-c
-#import <KVOController/FBKVOController.h>
+#import <KVOController/KVOController.h>
 ```
 
 ## Testing

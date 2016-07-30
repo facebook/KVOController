@@ -5,9 +5,6 @@
       location = "group:FBKVOController.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:DynamicFramework.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Examples/Examples.xcodeproj">
    </FileRef>
    <FileRef
