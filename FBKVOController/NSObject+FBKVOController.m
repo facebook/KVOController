@@ -9,7 +9,6 @@
 
 #import "NSObject+FBKVOController.h"
 
-#import <libkern/OSAtomic.h>
 #import <objc/message.h>
 
 #if !__has_feature(objc_arc)
@@ -17,6 +16,8 @@
 #endif
 
 #pragma mark NSObject Category -
+
+NS_ASSUME_NONNULL_BEGIN
 
 static void *NSObjectKVOControllerKey = &NSObjectKVOControllerKey;
 static void *NSObjectKVOControllerNonRetainingKey = &NSObjectKVOControllerNonRetainingKey;
@@ -60,3 +61,5 @@ static void *NSObjectKVOControllerNonRetainingKey = &NSObjectKVOControllerNonRet
 
 @end
 
+
+NS_ASSUME_NONNULL_END
