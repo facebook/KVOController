@@ -40,10 +40,15 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
+ Key provided in the @c change dictionary of @c FBKVONotificationBlock that's value represents the key-path being observed
+ */
+extern NSString *const FBKVONotificationKeyPathKey;
+
+/**
  @abstract Block called on key-value change notification.
  @param observer The observer of the change.
  @param object The object changed.
- @param change The change dictionary.
+ @param change The change dictionary which also includes @c FBKVONotificationKeyPathKey
  */
 typedef void (^FBKVONotificationBlock)(id _Nullable observer, id object, NSDictionary<NSString *, id> *change);
 

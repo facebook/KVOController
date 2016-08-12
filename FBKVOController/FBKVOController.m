@@ -93,6 +93,8 @@ typedef NS_ENUM(uint8_t, _FBKVOInfoState) {
   _FBKVOInfoStateNotObserving,
 };
 
+NSString *const FBKVONotificationKeyPathKey = @"FBKVONotificationKeyPathKey";
+
 /**
  @abstract The key-value observation info.
  @discussion Object equality is only used within the scope of a controller instance. Safely omit controller from equality definition.
@@ -372,7 +374,14 @@ typedef NS_ENUM(uint8_t, _FBKVOInfoState) {
 
         // dispatch custom block or action, fall back to default action
         if (info->_block) {
-          info->_block(observer, object, change);
+          NSDictionary<NSString *, id> *changeWithKeyPath = change;
+          // add the keyPath to the change dictionary for clarity when mulitple keyPaths are being observed
+          if (keyPath) {
+            NSMutableDictionary<NSString *, id> *mChange = [NSMutableDictionary dictionaryWithObject:keyPath forKey:FBKVONotificationKeyPathKey];
+            [mChange addEntriesFromDictionary:change];
+            changeWithKeyPath = [mChange copy];
+          }
+          info->_block(observer, object, changeWithKeyPath);
         } else if (info->_action) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
