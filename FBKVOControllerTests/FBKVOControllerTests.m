@@ -69,14 +69,14 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
   XCTAssert(1 == blockCallCount, @"unexpected block call count:%lu expected:%d", (unsigned long)blockCallCount, 1);
   XCTAssert(blockObserver == observer, @"value:%@ expected:%@", blockObserver, observer);
   XCTAssert(blockObject == referenceObserver.lastObject, @"value:%@ expected:%@", blockObject, referenceObserver.lastObject);
-  XCTAssert(blockKeyPath == radius, @"value:%@ expected:%@", blockKeyPath, radius);
+  XCTAssert([blockKeyPath isEqualToString:radius], @"value:%@ expected:%@", blockKeyPath, radius);
   XCTAssertEqualObjects(blockChange, referenceObserver.lastChange, @"value:%@ expected:%@", blockChange, referenceObserver.lastChange);
   
   circle.radius = 1.0;
   XCTAssert(2 == blockCallCount, @"unexpected block call count:%lu expected:%d", (unsigned long)blockCallCount, 2);
   XCTAssert(blockObserver == observer, @"value:%@ expected:%@", blockObserver, observer);
   XCTAssert(blockObject == referenceObserver.lastObject, @"value:%@ expected:%@", blockObject, referenceObserver.lastObject);
-  XCTAssert(blockKeyPath == radius, @"value:%@ expected:%@", blockKeyPath, radius);
+  XCTAssert([blockKeyPath isEqualToString:radius], @"value:%@ expected:%@", blockKeyPath, radius);
   XCTAssertEqualObjects(blockChange, referenceObserver.lastChange, @"value:%@ expected:%@", blockChange, referenceObserver.lastChange);
   
   // cleanup
