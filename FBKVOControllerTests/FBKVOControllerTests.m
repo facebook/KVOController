@@ -61,7 +61,9 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
   [controller observe:circle keyPath:radius options:optionsBasic block:^(id observer, id object, NSDictionary *change) {
     blockObserver = observer;
     blockObject = object;
-    blockChange = change;
+    NSMutableDictionary *mChange = [change mutableCopy];
+    [mChange removeObjectForKey:FBKVONotificationKeyPathKey];
+    blockChange = [mChange copy];
     blockKeyPath = change[FBKVONotificationKeyPathKey];
     blockCallCount++;
   }];
