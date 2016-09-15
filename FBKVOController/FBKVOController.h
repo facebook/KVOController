@@ -23,7 +23,7 @@
  */
 #define FBKVOKeyPath(KEYPATH) \
 @(((void)(NO && ((void)KEYPATH, NO)), \
-({ char *fbkvokeypath = strchr(#KEYPATH, '.'); NSCAssert(fbkvokeypath, @"Provided key path is invalid."); fbkvokeypath + 1; })))
+({ const char *fbkvokeypath = strchr(#KEYPATH, '.'); NSCAssert(fbkvokeypath, @"Provided key path is invalid."); fbkvokeypath + 1; })))
 
 /**
  This macro ensures that key path exists at compile time.
