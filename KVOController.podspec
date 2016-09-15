@@ -1,9 +1,9 @@
 Pod::Spec.new do |spec|
   spec.name         = 'KVOController'
-  spec.version      = '1.1.0'
+  spec.version      = '1.2.0'
   spec.license      =  { :type => 'BSD' }
   spec.homepage     = 'https://github.com/facebook/KVOController'
-  spec.authors      = { 'Kimon Tsinteris' => 'kimon@mac.com' }
+  spec.authors      = { 'Kimon Tsinteris' => 'kimon@mac.com', 'Nikita Lutsenko' => 'nlutsenko@me.com' }
   spec.summary      = 'Simple, modern, thread-safe key-value observing.'
   spec.description  = <<-DESC
                       KVOController builds on Cocoa's time-tested key-value observing implementation. It offers a simple, modern API, that is also thread safe.
