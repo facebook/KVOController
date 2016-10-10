@@ -41,6 +41,25 @@ For an even easier usage, just `#import <KVOController/NSObject+FBKVOController.
 [self.KVOController observe:clock keyPath:@"date" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew action:@selector(updateClockWithDateChange:)];
 ```
 
+## Swift
+
+KVOController works fine with Swift but the properties that you need to observer must be marked as `dynamic` check the following example:
+```Swift
+class TasksListViewModel: NSObject, TasksListViewModelProtocol{
+
+    dynamic var tasksList: [TaskList] = []
+}
+
+/// In ViewController.swift
+
+import KVOController
+
+self.KVOController.observe(self.viewModel as? AnyObject, keyPath: "tasksList", options: [.New, .Initial]) { (viewController, viewModel, change) in
+            
+    self.taskListsTableView.reloadData()
+}
+```
+
 ## Prerequisites
 
 KVOController takes advantage of recent Objective-C runtime advances, including ARC and weak collections. It requires:
