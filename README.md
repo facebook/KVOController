@@ -44,14 +44,16 @@ For an even easier usage, just `#import <KVOController/NSObject+FBKVOController.
 ## Swift
 
 KVOController works great in Swift but there are few requirements:
+
 - Your observer should subclass `NSObject`.
 - Properties that you observe must be marked as `dynamic`.
+
 Check the following example:
 
 ```Swift
 class TasksListViewModel: NSObject, TasksListViewModelProtocol {
 
-    dynamic var tasksList: [TaskList] = []
+  dynamic var tasksList: [TaskList] = []
 }
 
 /// In ViewController.swift
@@ -59,10 +61,10 @@ class TasksListViewModel: NSObject, TasksListViewModelProtocol {
 import KVOController
 
 kvoController.observe(viewModel,
-                           keyPath: "listsDidChange",
-                           options: [.new, .initial]) { (viewController, viewModel, change) in
+                      keyPath: "listsDidChange",
+                      options: [.new, .initial]) { (viewController, viewModel, change) in
     
-    self.taskListsTableView.reloadData()
+  self.taskListsTableView.reloadData()
 }
 ```
 
