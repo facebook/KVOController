@@ -50,7 +50,7 @@ extern NSString *const FBKVONotificationKeyPathKey;
  @param object The object changed.
  @param change The change dictionary which also includes @c FBKVONotificationKeyPathKey
  */
-typedef void (^FBKVONotificationBlock)(id _Nullable observer, id object, NSDictionary<NSString *, id> *change);
+typedef void (^FBKVONotificationBlock)(id _Nullable observer, id object, NSDictionary<NSKeyValueChangeKey, id> *change);
 
 /**
  @abstract FBKVOController makes Key-Value Observing simpler and safer.
