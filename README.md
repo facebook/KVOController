@@ -51,7 +51,7 @@ KVOController works great in Swift but there are few requirements:
 Check the following example:
 
 ```Swift
-class TasksListViewModel: NSObject, TasksListViewModelProtocol {
+class TasksListViewModel: NSObject {
 
   dynamic var tasksList: [TaskList] = []
 }
