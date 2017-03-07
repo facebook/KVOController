@@ -96,7 +96,7 @@ typedef NS_ENUM(uint8_t, _FBKVOInfoState) {
   _FBKVOInfoStateNotObserving,
 };
 
-NSKeyValueChangeKey const FBKVONotificationKeyPathKey = @"FBKVONotificationKeyPathKey";
+NSString *const FBKVONotificationKeyPathKey = @"FBKVONotificationKeyPathKey";
 
 /**
  @abstract The key-value observation info.
@@ -351,7 +351,7 @@ NSKeyValueChangeKey const FBKVONotificationKeyPathKey = @"FBKVONotificationKeyPa
 
 - (void)observeValueForKeyPath:(nullable NSString *)keyPath
                       ofObject:(nullable id)object
-                        change:(nullable NSDictionary<NSKeyValueChangeKey, id> *)change
+                        change:(nullable NSDictionary<NSString *, id> *)change
                        context:(nullable void *)context
 {
   NSAssert(context, @"missing context keyPath:%@ object:%@ change:%@", keyPath, object, change);
@@ -375,7 +375,7 @@ NSKeyValueChangeKey const FBKVONotificationKeyPathKey = @"FBKVONotificationKeyPa
       id observer = controller.observer;
       if (nil != observer) {
 
-        NSDictionary<NSKeyValueChangeKey, id> *changeWithKeyPath = change;
+        NSDictionary<NSString *, id> *changeWithKeyPath = change;
         // add the keyPath to the change dictionary for clarity when mulitple keyPaths are being observed
         if (keyPath && (info->_options & FBKeyValueObservingOptionKeyPath) != 0) {
           NSMutableDictionary<NSString *, id> *mChange = [NSMutableDictionary dictionaryWithObject:keyPath forKey:FBKVONotificationKeyPathKey];

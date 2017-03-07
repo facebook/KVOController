@@ -49,7 +49,7 @@ static NSKeyValueObservingOptions const FBKeyValueObservingOptionKeyPath = (1 <<
 /**
  Key provided in the @c change dictionary of @c FBKVONotificationBlock that's value represents the key-path being observed
  */
-extern NSKeyValueChangeKey const FBKVONotificationKeyPathKey;
+extern NSString *const FBKVONotificationKeyPathKey;
 
 /**
  @abstract Block called on key-value change notification.
