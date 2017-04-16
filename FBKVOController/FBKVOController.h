@@ -74,7 +74,7 @@ typedef void (^FBKVONotificationBlock)(id _Nullable observer, id object, NSDicti
  @param observer The object notified on key-value change. The specified observer must support weak references.
  @param retainObserved Flag indicating whether observed objects should be retained.
  @return The initialized KVO controller instance.
- @discussion Use retainObserved = NO when a strong reference between controller and observee would create a retain loop. When not retaining observees, special care must be taken to remove observation info prior to observee dealloc.
+ @discussion Use retainObserved = NO when a strong reference between controller and observee would create a retain loop. 
  */
 - (instancetype)initWithObserver:(nullable id)observer retainObserved:(BOOL)retainObserved NS_DESIGNATED_INITIALIZER;
 

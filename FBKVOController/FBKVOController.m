@@ -417,7 +417,7 @@ NSString *const FBKVONotificationKeyPathKey = @"FBKVONotificationKeyPathKey";
   self = [super init];
   if (nil != self) {
     _observer = observer;
-    NSPointerFunctionsOptions keyOptions = retainObserved ? NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPointerPersonality : NSPointerFunctionsWeakMemory|NSPointerFunctionsObjectPointerPersonality;
+    NSPointerFunctionsOptions keyOptions = retainObserved ? NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPointerPersonality : NSPointerFunctionsOpaqueMemory|NSPointerFunctionsObjectPointerPersonality;
     _objectInfosMap = [[NSMapTable alloc] initWithKeyOptions:keyOptions valueOptions:NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPersonality capacity:0];
     pthread_mutex_init(&_lock, NULL);
   }
