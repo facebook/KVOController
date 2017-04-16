@@ -93,7 +93,7 @@ Alternatively, drag and drop FBKVOController.h and FBKVOController.m into your X
 
 Having installed using CocoaPods or Carthage, add the following to import in Objective-C:
 ```objective-c
-#import <KVOController/KVOController.h>
+# import <KVOController/KVOController.h>
 ```
 
 ## Testing
