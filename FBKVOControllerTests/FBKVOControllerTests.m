@@ -30,6 +30,7 @@ static NSString *borderWidth = @"borderWidth";
 static void *context = (void *)@"context";
 static NSKeyValueObservingOptions const optionsNone = 0;
 static NSKeyValueObservingOptions const optionsBasic = NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld | NSKeyValueObservingOptionInitial;
+static NSKeyValueObservingOptions const optionsBasicWithCustomOption =  optionsBasic | FBKeyValueObservingOptionKeyPath;
 static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueObservingOptionPrior;
 
 - (void)testDebugDescriptionContainsClassName
@@ -67,13 +68,56 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
     blockKeyPath = change[FBKVONotificationKeyPathKey];
     blockCallCount++;
   }];
+  XCTAssert(1 == blockCallCount, @"unexpected block call count:%lu expected:%d", (unsigned long)blockCallCount, 1);
+  XCTAssert(blockObserver == observer, @"value:%@ expected:%@", blockObserver, observer);
+  XCTAssert(blockObject == referenceObserver.lastObject, @"value:%@ expected:%@", blockObject, referenceObserver.lastObject);
+  XCTAssertNil(blockKeyPath, @"value:%@ expected:nil", blockKeyPath);
+  XCTAssertEqualObjects(blockChange, referenceObserver.lastChange, @"value:%@ expected:%@", blockChange, referenceObserver.lastChange);
   
+  circle.radius = 1.0;
+  XCTAssert(2 == blockCallCount, @"unexpected block call count:%lu expected:%d", (unsigned long)blockCallCount, 2);
+  XCTAssert(blockObserver == observer, @"value:%@ expected:%@", blockObserver, observer);
+  XCTAssert(blockObject == referenceObserver.lastObject, @"value:%@ expected:%@", blockObject, referenceObserver.lastObject);
+  XCTAssertNil(blockKeyPath, @"value:%@ expected:nil", blockKeyPath);
+  XCTAssertEqualObjects(blockChange, referenceObserver.lastChange, @"value:%@ expected:%@", blockChange, referenceObserver.lastChange);
+  
+  // cleanup
+  [circle removeObserver:referenceObserver forKeyPath:radius];
+}
+
+- (void)testBlockOptionsBasicWithCustomOption
+{
+  FBKVOTestCircle *circle = [FBKVOTestCircle circle];
+  id<FBKVOTestObserving> observer = mockProtocol(@protocol(FBKVOTestObserving));
+  FBKVOController *controller = [FBKVOController controllerWithObserver:observer];
+  FBKVOTestObserver *referenceObserver = [FBKVOTestObserver observer];
+
+  // add reference observe
+  [circle addObserver:referenceObserver forKeyPath:radius options:optionsBasicWithCustomOption context:context];
+
+  __block NSUInteger blockCallCount = 0;
+  __block id blockObserver = nil;
+  __block id blockObject = nil;
+  __block NSString *blockKeyPath = nil;
+  __block NSDictionary *blockChange = nil;
+
+  // add mock observer
+  [controller observe:circle keyPath:radius options:optionsBasicWithCustomOption block:^(id observer, id object, NSDictionary *change) {
+    blockObserver = observer;
+    blockObject = object;
+    NSMutableDictionary *mChange = [change mutableCopy];
+    [mChange removeObjectForKey:FBKVONotificationKeyPathKey];
+    blockChange = [mChange copy];
+    blockKeyPath = change[FBKVONotificationKeyPathKey];
+    blockCallCount++;
+  }];
+
   XCTAssert(1 == blockCallCount, @"unexpected block call count:%lu expected:%d", (unsigned long)blockCallCount, 1);
   XCTAssert(blockObserver == observer, @"value:%@ expected:%@", blockObserver, observer);
   XCTAssert(blockObject == referenceObserver.lastObject, @"value:%@ expected:%@", blockObject, referenceObserver.lastObject);
   XCTAssert([blockKeyPath isEqualToString:radius], @"value:%@ expected:%@", blockKeyPath, radius);
   XCTAssertEqualObjects(blockChange, referenceObserver.lastChange, @"value:%@ expected:%@", blockChange, referenceObserver.lastChange);
-  
+
   circle.radius = 1.0;
   XCTAssert(2 == blockCallCount, @"unexpected block call count:%lu expected:%d", (unsigned long)blockCallCount, 2);
   XCTAssert(blockObserver == observer, @"value:%@ expected:%@", blockObserver, observer);
@@ -195,9 +239,11 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
 
   // Arrange 2: Observe the key paths "radius" and "borderWidth" on the circle.
   //            Aggregate the new values in an array.
+  NSMutableArray *observedKeys = [NSMutableArray array];
   NSMutableArray *newValues = [NSMutableArray array];
   FBKVOTestCircle *circle = [FBKVOTestCircle circle];
   [controller observe:circle keyPaths:@[radius, borderWidth] options:NSKeyValueObservingOptionNew block:^(id observer, FBKVOTestCircle *circle, NSDictionary *change) {
+    [observedKeys addObject:change[FBKVONotificationKeyPathKey]];
     [newValues addObject:change[NSKeyValueChangeNewKey]];
   }];
 
@@ -206,6 +252,7 @@ static NSKeyValueObservingOptions const optionsAll = optionsBasic | NSKeyValueOb
   circle.borderWidth = 10.f;
 
   // Assert: Changes to the radius and borderWidth should have been observed.
+  assertThat(observedKeys, equalTo(@[radius, borderWidth]));
   assertThat(newValues, equalTo(@[@1, @10]));
 }
 

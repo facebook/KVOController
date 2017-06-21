@@ -40,6 +40,13 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
+ Additional option that may be passed to @c NSKeyValueObservingOptions mask.
+ When provided, and observing a keyPath, the @c FBKVONotificationKeyPathKey key will be added to the @c change dictionary.
+ This option is added automatically for any method passing multiple keyPaths.
+ */
+static NSKeyValueObservingOptions const FBKeyValueObservingOptionKeyPath = (1 << NSKeyValueObservingOptionPrior);
+
+/**
  Key provided in the @c change dictionary of @c FBKVONotificationBlock that's value represents the key-path being observed
  */
 extern NSString *const FBKVONotificationKeyPathKey;

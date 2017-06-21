@@ -35,6 +35,9 @@ static NSString *describe_option(NSKeyValueObservingOptions option)
     case NSKeyValueObservingOptionPrior:
       return @"NSKeyValueObservingOptionPrior";
       break;
+    case FBKeyValueObservingOptionKeyPath:
+      return @"FBKeyValueObservingOptionKeyPath";
+      break;
     default:
       NSCAssert(NO, @"unexpected option %tu", option);
       break;
@@ -372,23 +375,23 @@ NSString *const FBKVONotificationKeyPathKey = @"FBKVONotificationKeyPathKey";
       id observer = controller.observer;
       if (nil != observer) {
 
+        NSDictionary<NSKeyValueChangeKey, id> *changeWithKeyPath = change;
+        // add the keyPath to the change dictionary for clarity when mulitple keyPaths are being observed
+        if (keyPath && (info->_options & FBKeyValueObservingOptionKeyPath) != 0) {
+          NSMutableDictionary<NSKeyValueChangeKey, id> *mChange = [NSMutableDictionary dictionaryWithObject:keyPath forKey:FBKVONotificationKeyPathKey];
+          [mChange addEntriesFromDictionary:change];
+          changeWithKeyPath = [mChange copy];
+        }
         // dispatch custom block or action, fall back to default action
         if (info->_block) {
-          NSDictionary<NSKeyValueChangeKey, id> *changeWithKeyPath = change;
-          // add the keyPath to the change dictionary for clarity when mulitple keyPaths are being observed
-          if (keyPath) {
-            NSMutableDictionary<NSString *, id> *mChange = [NSMutableDictionary dictionaryWithObject:keyPath forKey:FBKVONotificationKeyPathKey];
-            [mChange addEntriesFromDictionary:change];
-            changeWithKeyPath = [mChange copy];
-          }
           info->_block(observer, object, changeWithKeyPath);
         } else if (info->_action) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-          [observer performSelector:info->_action withObject:change withObject:object];
+          [observer performSelector:info->_action withObject:changeWithKeyPath withObject:object];
 #pragma clang diagnostic pop
         } else {
-          [observer observeValueForKeyPath:keyPath ofObject:object change:change context:info->_context];
+          [observer observeValueForKeyPath:keyPath ofObject:object change:changeWithKeyPath context:info->_context];
         }
       }
     }
@@ -590,7 +593,7 @@ NSString *const FBKVONotificationKeyPathKey = @"FBKVONotificationKeyPathKey";
   }
 
   for (NSString *keyPath in keyPaths) {
-    [self observe:object keyPath:keyPath options:options block:block];
+    [self observe:object keyPath:keyPath options:options|FBKeyValueObservingOptionKeyPath block:block];
   }
 }
 
@@ -618,7 +621,7 @@ NSString *const FBKVONotificationKeyPathKey = @"FBKVONotificationKeyPathKey";
   }
 
   for (NSString *keyPath in keyPaths) {
-    [self observe:object keyPath:keyPath options:options action:action];
+    [self observe:object keyPath:keyPath options:options|FBKeyValueObservingOptionKeyPath action:action];
   }
 }
 
@@ -644,7 +647,7 @@ NSString *const FBKVONotificationKeyPathKey = @"FBKVONotificationKeyPathKey";
   }
 
   for (NSString *keyPath in keyPaths) {
-    [self observe:object keyPath:keyPath options:options context:context];
+    [self observe:object keyPath:keyPath options:options|FBKeyValueObservingOptionKeyPath context:context];
   }
 }
 
