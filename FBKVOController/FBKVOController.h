@@ -52,10 +52,17 @@ extern NSString *const FBKVONotificationKeyPathKey;
  */
 typedef void (^FBKVONotificationBlock)(id _Nullable observer, id object, NSDictionary<NSKeyValueChangeKey, id> *change);
 
+/**
+ * @typedef FBKVOControllerObjectStoreType
+ * @brief The KVOController observable object association type
+ * @constant FBKVOControllerObjectStoreTypeStrong store observable object as strong reference
+ * @constant FBKVOControllerObjectStoreTypeWeak store observable object as weak reference
+ * @constant FBKVOControllerObjectStoreTypeAssign store observable object as opaque pointer
+ */
 typedef NS_ENUM(NSUInteger, FBKVOControllerObjectStoreType) {
-    FBKVOControllerObjectStoreTypeStrong,
-    FBKVOControllerObjectStoreTypeWeak,
-    FBKVOControllerObjectStoreTypeAssign,
+  FBKVOControllerObjectStoreTypeStrong,
+  FBKVOControllerObjectStoreTypeWeak,
+  FBKVOControllerObjectStoreTypeAssign,
 };
 
 /**
@@ -79,6 +86,15 @@ typedef NS_ENUM(NSUInteger, FBKVOControllerObjectStoreType) {
  @abstract The designated initializer.
  @param observer The object notified on key-value change. The specified observer must support weak references.
  @param retainObserved Flag indicating whether observed objects should be retained.
+ @return The initialized KVO controller instance.
+ @discussion Use retainObserved = NO when a strong reference between controller and observee would create a retain loop. When not retaining observees, special care must be taken to remove observation info prior to observee dealloc.
+ */
+- (instancetype)initWithObserver:(nullable id)observer retainObserved:(BOOL)retainObserved __attribute__((deprecated));
+
+/**
+ @abstract The designated initializer.
+ @param observer The object notified on key-value change. The specified observer must support weak references.
+ @param storeType Enum specifying how observed object references should be stored.
  @return The initialized KVO controller instance.
  @discussion Use retainObserved = NO when a strong reference between controller and observee would create a retain loop. When not retaining observees, special care must be taken to remove observation info prior to observee dealloc.
  */

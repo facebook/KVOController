@@ -435,6 +435,15 @@ NSString *const FBKVONotificationKeyPathKey = @"FBKVONotificationKeyPathKey";
   return self;
 }
 
+- (instancetype)initWithObserver:(nullable id)observer retainObserved:(BOOL)retainObserved
+{
+  if (retainObserved) {
+    return [self initWithObserver:observer storeType:FBKVOControllerObjectStoreTypeStrong];
+  }
+  return [self initWithObserver:observer storeType:FBKVOControllerObjectStoreTypeWeak];
+}
+
+
 - (instancetype)initWithObserver:(nullable id)observer
 {
   return [self initWithObserver:observer storeType:FBKVOControllerObjectStoreTypeStrong];
