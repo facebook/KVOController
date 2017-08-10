@@ -53,6 +53,19 @@ extern NSString *const FBKVONotificationKeyPathKey;
 typedef void (^FBKVONotificationBlock)(id _Nullable observer, id object, NSDictionary<NSKeyValueChangeKey, id> *change);
 
 /**
+ * @typedef FBKVOControllerObjectStoreType
+ * @brief The KVOController observable object association type
+ * @constant FBKVOControllerObjectStoreTypeStrong store observable object as strong reference
+ * @constant FBKVOControllerObjectStoreTypeWeak store observable object as weak reference
+ * @constant FBKVOControllerObjectStoreTypeAssign store observable object as opaque pointer
+ */
+typedef NS_ENUM(NSUInteger, FBKVOControllerObjectStoreType) {
+  FBKVOControllerObjectStoreTypeStrong,
+  FBKVOControllerObjectStoreTypeWeak,
+  FBKVOControllerObjectStoreTypeAssign,
+};
+
+/**
  @abstract FBKVOController makes Key-Value Observing simpler and safer.
  @discussion FBKVOController adds support for handling key-value changes with blocks and custom actions, as well as the NSKeyValueObserving callback. Notification will never message a deallocated observer. Observer removal never throws exceptions, and observers are removed implicitly on controller deallocation. FBKVOController is also thread safe. When used in a concurrent environment, it protects observers from possible resurrection and avoids ensuing crash. By default, the controller maintains a strong reference to objects observed.
  */
@@ -76,7 +89,16 @@ typedef void (^FBKVONotificationBlock)(id _Nullable observer, id object, NSDicti
  @return The initialized KVO controller instance.
  @discussion Use retainObserved = NO when a strong reference between controller and observee would create a retain loop. When not retaining observees, special care must be taken to remove observation info prior to observee dealloc.
  */
-- (instancetype)initWithObserver:(nullable id)observer retainObserved:(BOOL)retainObserved NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithObserver:(nullable id)observer retainObserved:(BOOL)retainObserved __attribute__((deprecated));
+
+/**
+ @abstract The designated initializer.
+ @param observer The object notified on key-value change. The specified observer must support weak references.
+ @param storeType Enum specifying how observed object references should be stored.
+ @return The initialized KVO controller instance.
+ @discussion Use retainObserved = NO when a strong reference between controller and observee would create a retain loop. When not retaining observees, special care must be taken to remove observation info prior to observee dealloc.
+ */
+- (instancetype)initWithObserver:(nullable id)observer storeType:(FBKVOControllerObjectStoreType)storeType NS_DESIGNATED_INITIALIZER;
 
 /**
  @abstract Convenience initializer.

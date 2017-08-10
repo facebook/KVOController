@@ -412,21 +412,41 @@ NSString *const FBKVONotificationKeyPathKey = @"FBKVONotificationKeyPathKey";
   return [[self alloc] initWithObserver:observer];
 }
 
-- (instancetype)initWithObserver:(nullable id)observer retainObserved:(BOOL)retainObserved
+- (instancetype)initWithObserver:(nullable id)observer storeType:(FBKVOControllerObjectStoreType)storeType
 {
   self = [super init];
   if (nil != self) {
     _observer = observer;
-    NSPointerFunctionsOptions keyOptions = retainObserved ? NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPointerPersonality : NSPointerFunctionsWeakMemory|NSPointerFunctionsObjectPointerPersonality;
+    NSPointerFunctionsOptions keyOptions = NSPointerFunctionsObjectPointerPersonality;
+    switch (storeType) {
+      case FBKVOControllerObjectStoreTypeStrong:
+        keyOptions |= NSPointerFunctionsStrongMemory;
+        break;
+      case FBKVOControllerObjectStoreTypeWeak:
+        keyOptions |= NSPointerFunctionsWeakMemory;
+        break;
+      case FBKVOControllerObjectStoreTypeAssign:
+        keyOptions |= NSPointerFunctionsOpaqueMemory;
+        break;
+    }
     _objectInfosMap = [[NSMapTable alloc] initWithKeyOptions:keyOptions valueOptions:NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPersonality capacity:0];
     pthread_mutex_init(&_lock, NULL);
   }
   return self;
 }
 
+- (instancetype)initWithObserver:(nullable id)observer retainObserved:(BOOL)retainObserved
+{
+  if (retainObserved) {
+    return [self initWithObserver:observer storeType:FBKVOControllerObjectStoreTypeStrong];
+  }
+  return [self initWithObserver:observer storeType:FBKVOControllerObjectStoreTypeWeak];
+}
+
+
 - (instancetype)initWithObserver:(nullable id)observer
 {
-  return [self initWithObserver:observer retainObserved:YES];
+  return [self initWithObserver:observer storeType:FBKVOControllerObjectStoreTypeStrong];
 }
 
 - (void)dealloc

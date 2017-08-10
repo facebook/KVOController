@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 static void *NSObjectKVOControllerKey = &NSObjectKVOControllerKey;
 static void *NSObjectKVOControllerNonRetainingKey = &NSObjectKVOControllerNonRetainingKey;
+static void *NSObjectKVOControllerForSelfKey = &NSObjectKVOControllerForSelfKey;
 
 @implementation NSObject (FBKVOController)
 
@@ -47,7 +48,7 @@ static void *NSObjectKVOControllerNonRetainingKey = &NSObjectKVOControllerNonRet
   id controller = objc_getAssociatedObject(self, NSObjectKVOControllerNonRetainingKey);
   
   if (nil == controller) {
-    controller = [[FBKVOController alloc] initWithObserver:self retainObserved:NO];
+    controller = [[FBKVOController alloc] initWithObserver:self storeType:FBKVOControllerObjectStoreTypeWeak];
     self.KVOControllerNonRetaining = controller;
   }
   
@@ -57,6 +58,23 @@ static void *NSObjectKVOControllerNonRetainingKey = &NSObjectKVOControllerNonRet
 - (void)setKVOControllerNonRetaining:(FBKVOController *)KVOControllerNonRetaining
 {
   objc_setAssociatedObject(self, NSObjectKVOControllerNonRetainingKey, KVOControllerNonRetaining, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (FBKVOController *)KVOControllerForSelf
+{
+  id controller = objc_getAssociatedObject(self, NSObjectKVOControllerForSelfKey);
+  
+  if (nil == controller) {
+    controller = [[FBKVOController alloc] initWithObserver:self storeType:FBKVOControllerObjectStoreTypeAssign];
+    self.KVOControllerForSelf = controller;
+  }
+  
+  return controller;
+}
+
+- (void)setKVOControllerForSelf:(FBKVOController *)KVOControllerForSelf
+{
+  objc_setAssociatedObject(self, NSObjectKVOControllerForSelfKey, KVOControllerForSelf, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end

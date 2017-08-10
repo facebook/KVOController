@@ -37,6 +37,15 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong) FBKVOController *KVOControllerNonRetaining;
 
+/**
+ @abstract Lazy-loaded FBKVOController for use with self
+ @return FBKVOController associated with this object, creating one if necessary
+ @discussion This makes it convenient to simply create and forget a FBKVOController.
+ Use this version when a strong reference between controller and observed object would create a retain cycle.
+ When not retaining observed objects, special care must be taken to remove observation info prior to deallocation of the observed object.
+ */
+@property (nonatomic, strong) FBKVOController *KVOControllerForSelf;
+
 @end
 
 NS_ASSUME_NONNULL_END
