@@ -64,7 +64,7 @@ kvoController.observe(viewModel,
                       keyPath: "listsDidChange",
                       options: [.new, .initial]) { (viewController, viewModel, change) in
     
-  self.taskListsTableView.reloadData()
+  viewController.taskListsTableView.reloadData()
 }
 ```
 
